@@ -2,7 +2,7 @@ resource "null_resource" "validate_token" {
   provisioner "local-exec" {
     command = <<EOT
       expected="fake-api-token-12345"
-      if [ "$expected" = "${TF_VAR_my_fake_sensitive_token}" ]; then
+      if [ "$expected" = "$TF_VAR_my_fake_sensitive_token" ]; then
         echo "✅ Token matches exactly!"
       else
         echo "❌ Token mismatch!"
