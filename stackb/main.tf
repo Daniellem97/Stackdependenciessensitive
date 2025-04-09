@@ -1,12 +1,18 @@
-variable "token" {
-  type = string
-}
-
-resource "null_resource" "test_auth" {
+resource "null_resource" "validate_token" {
   provisioner "local-exec" {
-    command = "curl -s -o /dev/null -w '%{http_code}' -H 'Authorization: Bearer ${var.token}' https://httpbin.org/bearer"
+    command = <<EOT
+      expected="fake-api-token-12345"
+      if [ "$expected" = "${TF_VAR_my_fake_sensitive_token}" ]; then
+        echo "✅ Token matches exactly!"
+      else
+        echo "❌ Token mismatch!"
+        echo "Got token: [REDACTED]"
+        exit 1
+      fi
+    EOT
   }
 }
+
 
 terraform {
   required_providers {
